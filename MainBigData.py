@@ -8,7 +8,7 @@ from math import sqrt
 if __name__ == "__main__":
     sc = SparkContext(appName="DocumentClustering")
 
-    files_RDD = sc.wholeTextFiles("hdfs:///user/jalvar53/datasets/gutenberg/*")
+    files_RDD = sc.wholeTextFiles("hdfs:///datasets/gutenberg-txt-es/19*.txt")
     documents_names = files_RDD.keys()
     documents = files_RDD.values().map(lambda doc: re.split('[^a-zA-Z]+', doc))
 
