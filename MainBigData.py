@@ -3,7 +3,6 @@ from pyspark import SparkContext, SparkConf
 from pyspark.mllib.clustering import KMeans, KMeansModel
 from pyspark.mllib.feature import HashingTF
 from pyspark.mllib.feature import IDF
-from math import sqrt
 
 if __name__ == "__main__":
     sc = SparkContext(appName="DocumentClustering")
@@ -21,10 +20,11 @@ if __name__ == "__main__":
 
     clusters = KMeans.train(tfidf, 2, maxIterations=10, initializationMode="random")
 
-    def error(point):
-        center = clusters.centers[clusters.predict(point)]
-        return sqrt(sum([x ** 2 for x in (point - center)]))
+    centers = clusters.predict(tfidf).collect()
+    names = documents_names.collect()
+    result = zip(names, centers)
 
-    WSSSE = tfidf.map(lambda point: error(point)).reduce(lambda x, y: x + y)
+    output = sc.parallelize(result)
+    output.saveAsTextFile("/users/lgalle17/output.txt")
 
-    print("Within Set Sum of Squared Error = " + str(WSSSE))
+    sc.stop()
