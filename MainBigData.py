@@ -7,7 +7,7 @@ from pyspark.mllib.feature import IDF
 if __name__ == "__main__":
     sc = SparkContext(appName="DocumentClustering")
 
-    files_RDD = sc.wholeTextFiles("hdfs:///user/jalvar53/datasets/gutenberg/*")
+    files_RDD = sc.wholeTextFiles("hdfs:///datasets/gutenberg-txt-es/19*.txt")
     documents_names = files_RDD.keys()
     documents = files_RDD.values().map(lambda doc: re.split('[^a-zA-Z]+', doc))
 
@@ -27,4 +27,4 @@ if __name__ == "__main__":
     output = sc.parallelize(result)
     output.saveAsTextFile("/users/lgalle17/output.txt")
 
-    sc.stop()
+    sc.stop();
